@@ -54,7 +54,7 @@ Um assistente de IA especializado em programação Python. Desenvolvido com **St
    npm run dev
    ```
 
-4. **Acesse**: [http://localhost:3000](http://localhost:3000)
+4. **Acesse**: [https://portifoliodados.vercel.app/](https://portifoliodados.vercel.app/)
 
 ---
 
