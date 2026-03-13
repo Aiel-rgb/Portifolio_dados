@@ -4,81 +4,10 @@ import Image from "next/image";
 import { useEffect, useState } from "react";
 import type { Project } from "./api/projects/route";
 
-const STACKS = [
-  "Python",
-  "pandas",
-  "numpy",
-  "matplotlib",
-  "scikit-learn",
-  "BI",
-  "Tableau",
-  "Git",
-  "Linux",
-] as const;
 
-function Pill({ label }: { label: string }) {
-  return (
-    <span className="rounded-full border border-white/5 bg-white/5 px-4 py-2 text-[10px] font-bold uppercase tracking-wider text-white/40 transition-all hover:border-[var(--color-accent)]/50 hover:bg-white/10 hover:text-white">
-      {label}
-    </span>
-  );
-}
 
-function ProjectCard({ project }: { project: Project }) {
-  const stacks = project.stacks
-    ? project.stacks.split(",").map((s) => s.trim()).filter(Boolean)
-    : [];
-
-  return (
-    <article className="group relative flex flex-col justify-between overflow-hidden rounded-3xl border border-white/5 bg-white/5 p-8 backdrop-blur-xl transition-all duration-500 hover:-translate-y-2 hover:border-[var(--color-accent)]/30 hover:bg-white/10 hover:shadow-[0_40px_80px_rgba(0,0,0,0.5)]">
-      <div className="absolute -right-20 -top-20 h-64 w-64 rounded-full bg-[var(--color-accent)]/5 blur-[100px] transition-all duration-700 group-hover:bg-[var(--color-accent)]/10" />
-
-      <div className="relative z-10">
-        <h3 className="text-2xl font-bold tracking-tight text-white transition-colors group-hover:text-[var(--color-accent)]">
-          {project.name}
-        </h3>
-        <p className="mt-4 text-sm leading-relaxed text-white/50">
-          {project.description}
-        </p>
-      </div>
-
-      <div className="relative z-10 mt-8 flex flex-wrap gap-2">
-        {stacks.map((stack) => (
-          <span
-            key={stack}
-            className="rounded-full bg-white/5 px-3 py-1 text-[10px] font-bold uppercase tracking-widest text-[var(--color-accent)] transition-all group-hover:bg-[var(--color-accent)]/10 group-hover:text-white"
-          >
-            {stack}
-          </span>
-        ))}
-      </div>
-
-      <div className="relative z-10 mt-10 flex flex-wrap items-center gap-4">
-        <a
-          href={project.link}
-          target="_blank"
-          rel="noreferrer"
-          className="group/btn flex items-center justify-center rounded-full border border-white/10 bg-white/5 px-6 py-3 text-[10px] font-bold uppercase tracking-widest text-white/60 transition-all hover:bg-black hover:text-white hover:border-black"
-        >
-          GitHub
-          <span className="ml-2 transition-transform duration-300 group-hover/btn:translate-x-1">→</span>
-        </a>
-
-        {project.siteLink && (
-          <a
-            href={project.siteLink}
-            target="_blank"
-            rel="noreferrer"
-            className="group/btn flex items-center justify-center rounded-full bg-[var(--color-accent)] px-6 py-3 text-[10px] font-bold uppercase tracking-widest text-black transition-all hover:scale-105 active:scale-95"
-          >
-            Ver Site
-            <span className="ml-2 transition-transform duration-300 group-hover/btn:translate-x-1">→</span>
-          </a>
-        )}
-      </div>
-    </article>
-  );
-}
+import CurvedLoop from "@/components/CurvedLoop";
+import { ProjectCard } from "@/components/ProjectCard";
 
 export default function Home() {
   const [projects, setProjects] = useState<Project[]>([]);
@@ -170,18 +99,13 @@ export default function Home() {
             </a>
           </div>
 
-          <div id="stacks" className="flex flex-wrap gap-2 pt-6">
-            {STACKS.map((stack) => (
-              <Pill key={stack} label={stack} />
-            ))}
-          </div>
         </section>
 
         {/* Foto / destaque */}
         <section className="relative mt-10 flex flex-1 justify-center md:mt-0 md:justify-end">
           <div className="group relative h-96 w-72 md:h-[450px] md:w-80">
-            <div className="absolute inset-0 scale-105 rounded-[3rem] bg-[var(--color-accent)]/10 blur-3xl transition-all duration-700 group-hover:scale-110 group-hover:bg-[var(--color-accent)]/20" />
-            <div className="relative h-full w-full overflow-hidden rounded-[3rem] border border-white/5 bg-[#111112] transition-all duration-700 group-hover:border-[var(--color-accent)]/30">
+            <div className="absolute inset-0 scale-105 rounded-[3rem] bg-(--color-accent)/10 blur-3xl transition-all duration-700 group-hover:scale-110 group-hover:bg-(--color-accent)/20" />
+            <div className="relative h-full w-full overflow-hidden rounded-[3rem] border border-white/5 bg-[#111112] transition-all duration-700 group-hover:border-(--color-accent)/30">
               <Image
                 src="/foto.jpeg"
                 alt="Foto de perfil de Gabriel Neves"
@@ -191,13 +115,23 @@ export default function Home() {
               />
               <div className="absolute inset-0 bg-gradient-to-t from-black via-transparent to-transparent opacity-80 transition-all duration-700 group-hover:opacity-40" />
               <div className="absolute bottom-10 left-10 right-10 transform transition-all duration-700 group-hover:translate-y-[-10px]">
-                <p className="text-[10px] font-black uppercase tracking-[0.3em] text-[var(--color-accent)]">Data Analyst Student</p>
+                <p className="text-[10px] font-black uppercase tracking-[0.3em] text-(--color-accent)">Data Analyst Student</p>
                 <p className="mt-2 text-lg font-bold text-white">Data Analyst</p>
               </div>
             </div>
           </div>
         </section>
       </main>
+
+      {/* Banner de Stacks Dinâmico */}
+      <div className="relative z-0 -mt-20 overflow-hidden select-none pointer-events-none md:pointer-events-auto">
+        <CurvedLoop
+          marqueeText="Python ✦ Matplotlib ✦ NumPy ✦ Pandas ✦ Scikit-learn ✦ BI ✦ Excel ✦ StatsModels ✦"
+          speed={1.5}
+          curveAmount={50}
+          interactive
+        />
+      </div>
 
       {/* Sobre mim */}
       <section

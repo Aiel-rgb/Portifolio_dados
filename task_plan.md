@@ -1,20 +1,17 @@
-# 📝 Task Plan - Piton Coder Buttons
+## Phase 7: Admin Panel & Data Update 🛠️ (Completed)
+- [x] Remove "Data Science" tag from Netflix project
+- [x] Create initial `src/app/admin/page.tsx`
+- [x] Connect UI to API
 
-## Phase 1: Blueprint 🟢
-- [ ] Discovery: Ask user questions
-- [ ] Research: Locate "Piton Coder" card in the codebase
-- [ ] Define Data Schema in `gemini.md` (Not required by user yet, but per protocol)
+## Phase 8: Admin Dashboard Upgrade 🚀 (Completed)
+- [x] Fix broken GitHub links in API
+- [x] Upgrade `src/app/api/projects/route.ts` for full CRUD + Reordering
+- [x] Implement Drag & Drop dashboard in `src/app/admin/page.tsx`
+- [x] Add Edit functionality for projects
+- [x] Apply premium "Dashboard" aesthetics
 
-## Phase 2: Link ⚡
-- [ ] Verify links (GitHub link needs to be found/confirmed)
-
-## Phase 3: Architect ⚙️
-- [ ] Write SOP for the button implementation
-- [ ] Implement the buttons in the navigation layer
-
-## Phase 4: Stylize ✨
-- [ ] Apply hover effects and premium styling
-- [ ] Verify UI responsiveness
-
-## Phase 5: Trigger 🛰️
-- [ ] Final verification and documentation
+## Phase 9: Visual Polish - CurvedLoop ✦
+- [ ] Create `src/components/CurvedLoop.tsx` with provided code
+- [ ] Refine component to fit the dark premium theme
+- [ ] Integrate into `src/app/page.tsx` as a stacks banner
+- [ ] Verify animations and responsiveness
