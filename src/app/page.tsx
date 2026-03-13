@@ -53,17 +53,28 @@ function ProjectCard({ project }: { project: Project }) {
         ))}
       </div>
 
-      <div className="relative z-10 mt-10 flex items-center justify-between">
+      <div className="relative z-10 mt-10 flex flex-wrap items-center gap-4">
         <a
           href={project.link}
           target="_blank"
           rel="noreferrer"
-          className="group/btn flex items-center gap-2 text-[10px] font-bold uppercase tracking-widest text-white/40 transition-all hover:text-white"
+          className="group/btn flex items-center justify-center rounded-full border border-white/10 bg-white/5 px-6 py-3 text-[10px] font-bold uppercase tracking-widest text-white/60 transition-all hover:bg-black hover:text-white hover:border-black"
         >
-          Explorar Projeto
-          <span className="transition-transform duration-300 group-hover/btn:translate-x-1">→</span>
+          GitHub
+          <span className="ml-2 transition-transform duration-300 group-hover/btn:translate-x-1">→</span>
         </a>
-        <div className="h-px w-0 bg-[var(--color-accent)] transition-all duration-500 group-hover:w-20" />
+
+        {project.siteLink && (
+          <a
+            href={project.siteLink}
+            target="_blank"
+            rel="noreferrer"
+            className="group/btn flex items-center justify-center rounded-full bg-[var(--color-accent)] px-6 py-3 text-[10px] font-bold uppercase tracking-widest text-black transition-all hover:scale-105 active:scale-95"
+          >
+            Ver Site
+            <span className="ml-2 transition-transform duration-300 group-hover/btn:translate-x-1">→</span>
+          </a>
+        )}
       </div>
     </article>
   );

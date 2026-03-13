@@ -4,6 +4,7 @@ export type Project = {
   id: number;
   name: string;
   link: string;
+  siteLink?: string;
   description: string;
   stacks: string;
 };
@@ -23,6 +24,7 @@ let projects: Project[] = [
     id: 2,
     name: "PITON - AI Coder",
     link: "https://github.com/gabrielneves/piton-ai-coder",
+    siteLink: "https://aiel-rgb-piton-coder-ia-coder-qklja7.streamlit.app/",
     description:
       "Assistente de IA especializado em Python construído com Streamlit e Groq API para auxílio em debugging e boas práticas de código.",
     stacks: "Python, Streamlit, Groq API, AI",
@@ -47,6 +49,7 @@ export async function POST(req: NextRequest) {
     id: Date.now(),
     name: String(body.name),
     link: String(body.link),
+    siteLink: body.siteLink ? String(body.siteLink) : undefined,
     description: String(body.description),
     stacks: String(body.stacks ?? ""),
   };
