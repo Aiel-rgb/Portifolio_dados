@@ -1,17 +1,16 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { useRouter } from "next/navigation";
 import type { Project } from "@/app/api/projects/route";
 
 export default function AdminDashboard() {
     const [projects, setProjects] = useState<Project[]>([]);
     const [loading, setLoading] = useState(true);
-    const [isEditing, setIsEditing] = useState<number | null>(null);
+    const [isEditing, setIsEditing] = useState<string | null>(null); // UUID é string
     const [formData, setFormData] = useState({
         name: "",
-        link: "",
-        siteLink: "",
+        github_link: "",
+        site_link: "",
         description: "",
         stacks: "",
     });
@@ -26,7 +25,9 @@ export default function AdminDashboard() {
         try {
             const res = await fetch("/api/projects");
             const data = await res.json();
-            setProjects(data);
+            if (Array.isArray(data)) {
+                setProjects(data);
+            }
         } finally {
             setLoading(false);
         }
@@ -37,7 +38,13 @@ export default function AdminDashboard() {
         setMessage("");
 
         const method = isEditing ? "PUT" : "POST";
-        const body = isEditing ? { ...formData, id: isEditing } : formData;
+        const body = isEditing ? { ...formData, id: isEditing } : {
+            name: formData.name,
+            link: formData.github_link, // O backend POST ainda usa 'link' e mapeia
+            siteLink: formData.site_link, // O backend POST ainda usa 'siteLink' e mapeia
+            description: formData.description,
+            stacks: formData.stacks
+        };
 
         try {
             const res = await fetch("/api/projects", {
@@ -48,9 +55,12 @@ export default function AdminDashboard() {
 
             if (res.ok) {
                 setMessage(isEditing ? "Projeto atualizado! ✅" : "Projeto adicionado! 🚀");
-                setFormData({ name: "", link: "", siteLink: "", description: "", stacks: "" });
+                setFormData({ name: "", github_link: "", site_link: "", description: "", stacks: "" });
                 setIsEditing(null);
                 fetchProjects();
+            } else {
+                const errorData = await res.json();
+                setMessage(`Erro: ${errorData.error || "Falha ao salvar"}`);
             }
         } catch (err) {
             setMessage("Erro ao salvar.");
@@ -61,18 +71,22 @@ export default function AdminDashboard() {
         setIsEditing(project.id);
         setFormData({
             name: project.name,
-            link: project.link,
-            siteLink: project.siteLink || "",
+            github_link: project.github_link,
+            site_link: project.site_link || "",
             description: project.description,
             stacks: project.stacks,
         });
         window.scrollTo({ top: 0, behavior: "smooth" });
     };
 
-    const handleDelete = async (id: number) => {
+    const handleDelete = async (id: string) => {
         if (!confirm("Tem certeza que deseja excluir?")) return;
-        await fetch(`/api/projects?id=${id}`, { method: "DELETE" });
-        fetchProjects();
+        const res = await fetch(`/api/projects?id=${id}`, { method: "DELETE" });
+        if (res.ok) {
+            fetchProjects();
+        } else {
+            alert("Erro ao excluir.");
+        }
     };
 
     // Drag and Drop Logic
@@ -132,34 +146,46 @@ export default function AdminDashboard() {
                             />
                         </div>
                         <div className="grid gap-6 md:grid-cols-2">
+                            <div className="space-y-2">
+                                <label className="text-[10px] font-black uppercase tracking-widest text-white/40 px-2">GitHub Link</label>
+                                <input
+                                    required
+                                    placeholder="https://github.com/..."
+                                    className="w-full rounded-2xl border border-white/5 bg-white/5 px-6 py-4 text-sm focus:border-(--color-accent)/50 outline-none transition-all"
+                                    value={formData.github_link}
+                                    onChange={(e) => setFormData({ ...formData, github_link: e.target.value })}
+                                />
+                            </div>
+                            <div className="space-y-2">
+                                <label className="text-[10px] font-black uppercase tracking-widest text-white/40 px-2">Site Link (Opcional)</label>
+                                <input
+                                    placeholder="https://..."
+                                    className="w-full rounded-2xl border border-white/5 bg-white/5 px-6 py-4 text-sm focus:border-(--color-accent)/50 outline-none transition-all"
+                                    value={formData.site_link}
+                                    onChange={(e) => setFormData({ ...formData, site_link: e.target.value })}
+                                />
+                            </div>
+                        </div>
+                        <div className="space-y-2">
+                            <label className="text-[10px] font-black uppercase tracking-widest text-white/40 px-2">Stacks (separadas por vírgula)</label>
                             <input
-                                required
-                                placeholder="GitHub Link"
+                                placeholder="Ex: React, Tails, Node"
                                 className="w-full rounded-2xl border border-white/5 bg-white/5 px-6 py-4 text-sm focus:border-(--color-accent)/50 outline-none transition-all"
-                                value={formData.link}
-                                onChange={(e) => setFormData({ ...formData, link: e.target.value })}
-                            />
-                            <input
-                                placeholder="Site Link (Opcional)"
-                                className="w-full rounded-2xl border border-white/5 bg-white/5 px-6 py-4 text-sm focus:border-(--color-accent)/50 outline-none transition-all"
-                                value={formData.siteLink}
-                                onChange={(e) => setFormData({ ...formData, siteLink: e.target.value })}
+                                value={formData.stacks}
+                                onChange={(e) => setFormData({ ...formData, stacks: e.target.value })}
                             />
                         </div>
-                        <input
-                            placeholder="Stacks (vírgula)"
-                            className="w-full rounded-2xl border border-white/5 bg-white/5 px-6 py-4 text-sm focus:border-(--color-accent)/50 outline-none transition-all"
-                            value={formData.stacks}
-                            onChange={(e) => setFormData({ ...formData, stacks: e.target.value })}
-                        />
-                        <textarea
-                            required
-                            rows={3}
-                            placeholder="Descrição..."
-                            className="w-full rounded-2xl border border-white/5 bg-white/5 px-6 py-4 text-sm focus:border-(--color-accent)/50 outline-none transition-all resize-none"
-                            value={formData.description}
-                            onChange={(e) => setFormData({ ...formData, description: e.target.value })}
-                        />
+                        <div className="space-y-2">
+                            <label className="text-[10px] font-black uppercase tracking-widest text-white/40 px-2">Descrição</label>
+                            <textarea
+                                required
+                                rows={3}
+                                placeholder="Conte um pouco sobre o projeto..."
+                                className="w-full rounded-2xl border border-white/5 bg-white/5 px-6 py-4 text-sm focus:border-(--color-accent)/50 outline-none transition-all resize-none"
+                                value={formData.description}
+                                onChange={(e) => setFormData({ ...formData, description: e.target.value })}
+                            />
+                        </div>
                         <div className="flex gap-4 pt-4">
                             <button
                                 type="submit"
@@ -170,7 +196,7 @@ export default function AdminDashboard() {
                             {isEditing && (
                                 <button
                                     type="button"
-                                    onClick={() => { setIsEditing(null); setFormData({ name: "", link: "", siteLink: "", description: "", stacks: "" }); }}
+                                    onClick={() => { setIsEditing(null); setFormData({ name: "", github_link: "", site_link: "", description: "", stacks: "" }); }}
                                     className="rounded-full border border-white/10 bg-white/5 px-10 py-5 text-[10px] font-bold uppercase tracking-widest text-white/40 hover:text-white transition-all"
                                 >
                                     Cancelar

@@ -1,28 +1,32 @@
-# 💎 B.L.A.S.T. Data Schema - Piton Coder Buttons
+# 💎 B.L.A.S.T. Data Schema - Persistence
 
-## 📊 Input Payload (Project Object)
-The current `Project` type in `src/app/api/projects/route.ts` needs to be expanded to support secondary links for specific projects.
+## 📊 Database Schema (PostgreSQL/Supabase)
+Table: `projects`
 
-```json
-{
-  "id": "number",
-  "name": "string",
-  "link": "string (GitHub)",
-  "siteLink": "string (Optional Streamlit/Site link)",
-  "description": "string",
-  "stacks": "string"
-}
-```
+| Column | Type | Constraints |
+| :--- | :--- | :--- |
+| `id` | `UUID` | Primary Key, Default `gen_random_uuid()` |
+| `name` | `TEXT` | Not Null |
+| `description` | `TEXT` | Not Null |
+| `github_link` | `TEXT` | Not Null |
+| `site_link` | `TEXT` | Optional |
+| `stacks` | `TEXT` | Not Null (Comma separated or Array) |
+| `created_at` | `TIMESTAMP` | Default `now()` |
+| `display_order` | `INTEGER` | Default `0` |
 
-## 📊 Output Payload (UI Component)
-The `ProjectCard` component will render:
-1.  **Primary Button (GitHub):** 
-    - Text: "GitHub" or "Código"
-    - Style: Outline, fills black on hover.
-2.  **Secondary Button (Site):**
-    - Text: "Live Demo" or "Ver Site"
-    - Style: Premium accent color button.
+## 📊 API Interface
+The API will maintain the same JSON structure for the frontend, but map to the DB.
 
-## 🛠️ Implementation Strategy
-- Update `api/projects/route.ts` to include `siteLink`.
-- Update `ProjectCard` in `page.tsx` to render two buttons if `siteLink` exists.
+### GET `/api/projects`
+- **Output**: `Project[]` sorted by `display_order`.
+
+### POST `/api/projects`
+- **Input**: `{ name, link, siteLink, description, stacks }`
+- **Action**: Insert into `projects` table.
+
+### PUT `/api/projects`
+- **Input**: Partial `Project` or `{ reorder: true, projects: Project[] }`
+- **Action**: Update specific row or batch update `display_order`.
+
+### DELETE `/api/projects?id=...`
+- **Action**: Delete row by id.

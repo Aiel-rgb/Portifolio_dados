@@ -1,14 +1,21 @@
-# 🚀 Piton Coder Buttons Implementation
+# 🚀 Portfolio Persistence & Deployment Migration
 
 ## 🛡️ Data Schemas
-- Button Links:
-    - GitHub: (To be determined)
-    - Streamlit: `https://aiel-rgb-piton-coder-ia-coder-qklja7.streamlit.app/`
+- **Project Schema**: (To be defined in `gemini.md`)
+    - id: number/uuid
+    - name: string
+    - description: string
+    - stacks: string[]
+    - githubLink: string
+    - siteLink: string (optional)
+    - order: number
 
 ## 📜 Behavioral Rules
-- Hover effect on GitHub button: fill with black.
-- Buttons must follow the premium aesthetic of the portfolio.
+- **Data Integrity**: Never overwrite the database without a safety check.
+- **Feedback**: Every CRUD operation must return clear success/error payloads.
+- **Premium UI**: Admin actions should feel smooth and premium.
 
 ## 🏗️ Architectural Invariants
-- Use Tailwind CSS or Vanilla CSS as per project conventions.
-- Maintain responsive design.
+- **Layered Structure**: Separate API logic from database connection.
+- **Environment Safety**: Use `.env` for all database credentials.
+- **Migration**: Ensure existing "initial" projects are seeded into the new database.
